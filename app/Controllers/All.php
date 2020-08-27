@@ -2,9 +2,10 @@
 
 namespace App\Controllers;
 
-use App\Models\ClientModel;
-use App\Models\EmployeurModel;
-use App\Models\TypeClientModel;
+use App\Models\ClientsParticuliersModel;
+use App\Models\ClientsEntreprisesModel;
+use App\Models\ComptesModel;
+use App\Models\EmployeursModel;
 use CodeIgniter\Controller;
 
 class All extends Controller
@@ -12,129 +13,105 @@ class All extends Controller
 
     public function index()
     {
-        $model = new ClientModel();
+    
 
-        $data['clients'] = $model->orderBy('id', 'DESC')->findAll();
-
-        return view('client/liste', $data);
+        return view('index');
     }
-
-    // public function add()
-    // {
-    //     $tcModel = new TypeClientModel();
-
-    //     $data['typeclients'] = $tcModel->findAll();
-
-    //     $empModel = new EmployeurModel();
-
-    //     $data['employeurs'] = $empModel->findAll();
-    //     return view('client/add', $data);
-    // }
 
     public function inserer()
     {
         helper(['form', 'url']);
 
-        $clientModel = new ClientModel();
-        $empModel = new EmployeurModel();
+        $cp = new ClientsParticuliersModel();
+        $ce = new ClientsEntreprisesModel();
+        $c = new ComptesModel();
+        $e = new EmployeursModel();
 
-        if (isset($_POST['btnAjouter'])) {
-            if ($_POST['type_client_id'] == '3') {
-                //entreprise
-                $data = [
-                    'numIdentification' => $this->request->getVar('numIdentification'),
-                    'raisonSocial' => $this->request->getVar('raisonSocial'),
-                    'nom_employeur' => $this->request->getVar('nom_employeur'),
-                    'adresse_employeur' => $this->request->getVar('adresse_employeur'),
-                ];
-
-                $save = $empModel->insert($data);
-
-                return redirect()->to(base_url('Client/liste'));
-                
-            } else if ($_POST['type_client_id'] == '1') {
-                //salarie
-                $data = [
-                    'type_client_id' => $this->request->getVar('type_client_id'),
-                    'employeur_id' => $this->request->getVar('employeur_id'),
-                    'nom' => $this->request->getVar('nom'),
-                    'prenom' => $this->request->getVar('prenom'),
-                    'adresse' => $this->request->getVar('adresse'),
-                    'tel' => $this->request->getVar('tel'),
-                    'email' => $this->request->getVar('email'),
+        if (isset($_POST['soumettre'])) {
+            if ($_POST['check1'] == 'Particulier') {
+            
+                $data1 = [
+                    'nom' => $this->request->getVar('nom_client'),
+                    'prenom' => $this->request->getVar('prenom_client'),
+                    'date_de_naissance' => $this->request->getVar('datenaiss'),
+                    'cni' => $this->request->getVar('cni'),
+                    'adresse' => $this->request->getVar('adresse_client'),
+                    'téléphone' => $this->request->getVar('tel_client'),
+                    'email' => $this->request->getVar('email_client'),
                     'profession' => $this->request->getVar('profession'),
+                    'statut' => $this->request->getVar('statut'),
                     'salaire' => $this->request->getVar('salaire'),
 
                 ];
 
-                $save = $clientModel->insert($data);
-                return redirect()->to(base_url('Client/liste'));
-            } else if ($_POST['type_client_id'] == '2') {
-                //nonsalarie
-                $data = [
-                    'type_client_id' => $this->request->getVar('type_client_id'),
-                    'nom' => $this->request->getVar('nom'),
-                    'prenom' => $this->request->getVar('prenom'),
-                    'adresse' => $this->request->getVar('adresse'),
-                    'tel' => $this->request->getVar('tel'),
-                    'email' => $this->request->getVar('email'),
+                $icp = $cp ->insert($data1);
 
+                $data2 = [
 
+                    'type_compte' => $this->request->getVar('type_compte'),
+                    'agence' => $this->request->getVar('numero_agence'),
+                    'numero_compte' => $this->request->getVar('numero_compte'),
+                    'cle_rib' => $this->request->getVar('cle_rib'),
+                    'frais_ouverture' => $this->request->getVar('frais_ouverture'),
+    
                 ];
 
-                $save = $clientModel->insert($data);
-                return redirect()->to(base_url('Client/liste'));
+                $ic = $c ->insert($data2);
+
+
+                return redirect()->to(base_url('index'));
+
+                if ($_POST['check3'] == 'salarie') {
+
+                    $data3 = [
+
+                        'type_compte' => $this->request->getVar('type_compte'),
+                        'agence' => $this->request->getVar('numero_agence'),
+                        'numero_compte' => $this->request->getVar('numero_compte'),
+                        'cle_rib' => $this->request->getVar('cle_rib'),
+                        'frais_ouverture' => $this->request->getVar('frais_ouverture'),
+        
+                    ];
+
+                    ie = $e ->insert($data3);
+
+                } return redirect()->to(base_url('index'));
+
+
+            } else if ($_POST['check1'] == 'Entreprise') {
+               
+                $data4 = [
+
+                    'statut' => $this->request->getVar('statut_juridique'),
+                    'denomination' => $this->request->getVar('nom_entreprise'),
+                    'ninea' => $this->request->getVar('ninea'),
+                    'adresse' => $this->request->getVar('adresse_entreprise'),
+                    'telephone' => $this->request->getVar('tel_entreprise'),
+                    'mail' => $this->request->getVar('email_entreprise')
+                  
+                ];
+
+                $ice = $ce->insert($data4);
+
+                $data2 = [
+
+                    'type_compte' => $this->request->getVar('type_compte'),
+                    'agence' => $this->request->getVar('numero_agence'),
+                    'numero_compte' => $this->request->getVar('numero_compte'),
+                    'cle_rib' => $this->request->getVar('cle_rib'),
+                    'frais_ouverture' => $this->request->getVar('frais_ouverture'),
+    
+                ];
+
+                $ic = $c ->insert($data2);
+
+                return redirect()->to(base_url('index'));
             }
         }
     }
 
-    // public function liste()
-    // {
-    //     $model = new ClientModel();
-
-    //     $data['clients'] = $model->orderBy('id', 'DESC')->findAll();
-
-    //     return view('client/liste', $data);
-    // }
+    
 
 
-    // public function edit($id = null)
-    // {
-
-    //     $model = new ClientModel();
-
-    //     $data['Client'] = $model->where('id', $id)->first();
-
-    //     return view('Client/edit-Client', $data);
-    // }
-
-    // public function update()
-    // {
-
-    //     helper(['form', 'url']);
-
-    //     $model = new ClientModel();
-
-    //     $id = $this->request->getVar('id');
-
-    //     $data = [
-
-    //         'nom' => $this->request->getVar('nom'),
-    //     ];
-
-    //     $save = $model->update($id, $data);
-
-    //     return redirect()->to(base_url('Client/index'));
-    // }
-
-//     public function delete($id = null)
-//     {
-
-//         $model = new ClientModel();
-
-//         $data['Client'] = $model->where('id', $id)->delete();
-
-//         return redirect()->to(base_url('Client/index'));
-//     }
-// 
+   
 }

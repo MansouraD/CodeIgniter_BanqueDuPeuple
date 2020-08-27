@@ -3,11 +3,11 @@ namespace App\Models;
 use CodeIgniter\Database\ConnectionInterface;
 use CodeIgniter\Model;
  
-class ClientsEntreprisesModel extends Model
+class ComptesModel extends Model
 {
-    protected $table = 'client_entreprise';
+    protected $table = 'compte';
  
-    protected $allowedFields = ['agence','numero_compte','cle_rib',
-                                'frais_ouverture','id_clientE','id_clientP'];
+    protected $allowedFields = ['type_compte','agence','numero_compte','cle_rib',
+                                'frais_ouverture'];
 
 }
